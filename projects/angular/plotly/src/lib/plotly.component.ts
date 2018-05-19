@@ -54,6 +54,7 @@ export class PlotlyComponent implements OnInit, OnChanges, OnDestroy {
 
   /**
    * Plotly layout
+   * Note: may be mutated by Plotly.
    */
   @Input()
   layout: any;
@@ -66,6 +67,7 @@ export class PlotlyComponent implements OnInit, OnChanges, OnDestroy {
 
   /**
    * Plotly traces
+   * Note: may be mutated by Plotly.
    */
   @Input()
   traces: any[];
@@ -109,12 +111,13 @@ export class PlotlyComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+    let newDatarevision: boolean;
     if (changes.traces && !changes.traces.firstChange) {
       /*
       As of 1.37.1, updating traces does not reliably update Plotly
       So increment the datarevision to ensure the plot updates
        */
-      this.layout.datarevision = this.datarevision++;
+      newDatarevision = true;
     }
     if (changes.layout && this.layout) {
       // force autosize for proper layout
@@ -122,7 +125,7 @@ export class PlotlyComponent implements OnInit, OnChanges, OnDestroy {
         this.layout.autosize = true;
       }
     }
-    this.react();
+    this.react(newDatarevision);
   }
 
   ngOnDestroy() {
@@ -148,12 +151,17 @@ export class PlotlyComponent implements OnInit, OnChanges, OnDestroy {
   /**
    * Invoke Plotly.react with the current traces, layout, and config.
    * This will update the size of the chart.
+   *
+   * @param newDatarevision increment datarevision; needed when traces have been mutated
    */
-  react() {
+  react(newDatarevision?: boolean) {
     if (this.layout == null) {
       this.layout = {
         autosize: true
       };
+    }
+    if (newDatarevision) {
+      this.layout.datarevision = this.datarevision++;
     }
     Plotly.react(this.plotlyDiv.nativeElement, this.traces, this.layout, this.config)
       .then(() => this.afterReact.emit());

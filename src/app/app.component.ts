@@ -68,7 +68,17 @@ export class AppComponent implements OnInit {
     console.log(`Adding (${x}, ${y})`);
     (trace.x as number[]).push(x);
     (trace.y as number[]).push(y);
-    this.traces = [trace];  // trigger Input change, which calls Plotly.react
+    this.plotly.react(true);
+    // this.traces = [trace];  // Alternatively, trigger Input change, which calls Plotly.react
+  }
+
+  addTrace() {
+    // shallow clone of first trace
+    const newTrace = {...this.traces[0]};
+    // create a different random y value for each of the existing traces values
+    newTrace.y = (newTrace.y as number[]).map(() => this.rand());
+    this.traces = [...this.traces, newTrace];
+    // this.plotly.react(true);  // alternate way of updating
   }
 
   onPlotlyEvent(e: PlotlyEvent) {
