@@ -5,18 +5,22 @@
     Plotly.js for Angular
   </h1>
 </div>
+<mat-tab-group [dynamicHeight]="true">
+  <mat-tab label="Basic">
+    <button mat-raised-button color="primary"
+            (click)="addRandomY()">
+      Add Point
+    </button>
+    <button mat-raised-button color="primary"
+            (click)="plotly.purge()">
+      purge()
+    </button>
+    <button mat-raised-button color="primary"
+            (click)="plotly.react()">
+      react()
+    </button>
+    <!-- needs ref in order to be discoverable by @ViewChild? -->
+    <plotly #plotly [traces]="traces" [layout]="layout"></plotly>
+  </mat-tab>
 
-<button mat-raised-button color="primary"
-        (click)="addRandomY()">
-  Add Point
-</button>
-<button mat-raised-button color="primary"
-        (click)="plotly.purge()">
-  purge()
-</button>
-<button mat-raised-button color="primary"
-        (click)="plotly.react()">
-  react()
-</button>
-<!-- needs ref in order to be discoverable by @ViewChild? -->
-<plotly #plotly [traces]="traces" [layout]="layout"></plotly>
+</mat-tab-group>

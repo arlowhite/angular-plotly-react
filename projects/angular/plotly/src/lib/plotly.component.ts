@@ -1,4 +1,4 @@
-import {Component, ElementRef, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild} from '@angular/core';
+import {Component, ElementRef, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges, ViewChild} from '@angular/core';
 /*
 There are many ways of loading Plotly; let the app developer load it however they want.
 For now, just assume there is a Plotly global
@@ -8,6 +8,14 @@ declare var Plotly: any;
 // importing Plotly this way provides types, but causes App error:
 // Module not found: Error: Can't resolve 'plotly.js' in '/home/awhite/Code/Angular/angular-plotly/dist/angular/plotly/fesm5'
 // import * as Plotly from 'plotly.js';
+
+export interface PlotlyEvent {
+  /**
+   * Name of the Plotly event. "plotly_*"
+   */
+  name: string;
+  event: any;
+}
 
 @Component({
   selector: 'plotly',
@@ -46,6 +54,16 @@ export class PlotlyComponent implements OnInit, OnChanges, OnDestroy {
   @Input()
   traces: any[];
 
+  /**
+   * Plotly events to subscribe to
+   * "plotly_" prefix optional
+   */
+  @Input()
+  events: string[];
+
+  @Output()
+  plotlyEvent: EventEmitter<PlotlyEvent> = new EventEmitter();
+
   private datarevision = 1;
 
   constructor() { }
@@ -61,14 +79,17 @@ export class PlotlyComponent implements OnInit, OnChanges, OnDestroy {
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.traces && !changes.traces.firstChange) {
-      if (this.layout == null) {
-        this.layout = {};
-      }
       /*
       As of 1.37.1, updating traces does not reliably update Plotly
       So increment the datarevision to ensure the plot updates
        */
       this.layout.datarevision = this.datarevision++;
+    }
+    if (changes.layout && this.layout) {
+      // force autosize for proper layout
+      if (this.layout.autosize == null) {
+        this.layout.autosize = true;
+      }
     }
     this.react();
   }
@@ -82,6 +103,11 @@ export class PlotlyComponent implements OnInit, OnChanges, OnDestroy {
    * This will update the size of the chart.
    */
   react() {
+    if (this.layout == null) {
+      this.layout = {
+        autosize: true
+      };
+    }
     Plotly.react(this.plotlyDiv.nativeElement, this.traces, this.layout, this.config);
   }
 
