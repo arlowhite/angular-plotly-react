@@ -1,0 +1,11 @@
+{
+  "name": "@angular/plotly",
+  "version": "0.0.1",
+  "peerDependencies": {
+    "@angular/common": "^4.0.0",
+    "@angular/core": "^4.0.0"
+  },
+  "devDependencies": {
+    "@types/plotly.js": "^1.36.1"
+  }
+}
