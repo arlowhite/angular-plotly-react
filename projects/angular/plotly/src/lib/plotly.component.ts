@@ -1,4 +1,4 @@
-import {Component, ElementRef, Input, OnChanges, OnInit, SimpleChanges, ViewChild} from '@angular/core';
+import {Component, ElementRef, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild} from '@angular/core';
 /*
 There are many ways of loading Plotly; let the app developer load it however they want.
 For now, just assume there is a Plotly global
@@ -20,17 +20,29 @@ declare var Plotly: any;
     }
   `]
 })
-export class PlotlyComponent implements OnInit, OnChanges {
+export class PlotlyComponent implements OnInit, OnChanges, OnDestroy {
 
+  /**
+   * The <div> where Plotly is created
+   */
   @ViewChild('plotlyDiv')
   plotlyDiv: ElementRef;
 
+  /**
+   * Plotly layout
+   */
   @Input()
   layout: any;
 
+  /**
+   * Plotly configuration
+   */
   @Input()
   config: any;
 
+  /**
+   * Plotly traces
+   */
   @Input()
   traces: any[];
 
@@ -61,12 +73,23 @@ export class PlotlyComponent implements OnInit, OnChanges {
     this.react();
   }
 
+  ngOnDestroy() {
+    this.purge();
+  }
+
   /**
    * Invoke Plotly.react with the current traces, layout, and config.
    * This will update the size of the chart.
    */
   react() {
     Plotly.react(this.plotlyDiv.nativeElement, this.traces, this.layout, this.config);
+  }
+
+  /**
+   * Clear the Plotly <div>
+   */
+  purge() {
+    Plotly.purge(this.plotlyDiv.nativeElement);
   }
 
 }

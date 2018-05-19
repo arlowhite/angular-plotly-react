@@ -1,6 +1,7 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import { randomNormal } from 'd3-random';
 import {Layout} from 'plotly.js';
+import {PlotlyComponent} from '../../projects/angular/plotly/src/lib/plotly.component';
 
 @Component({
   selector: 'app-root',
@@ -8,6 +9,9 @@ import {Layout} from 'plotly.js';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit {
+
+  @ViewChild('plotly')
+  plotly: PlotlyComponent;
 
   layout: Partial<Layout>;
 

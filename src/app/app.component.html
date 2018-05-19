@@ -5,9 +5,18 @@
     Plotly.js for Angular
   </h1>
 </div>
+
 <button mat-raised-button color="primary"
         (click)="addRandomY()">
   Add Point
 </button>
-
-<plotly [traces]="traces" [layout]="layout"></plotly>
+<button mat-raised-button color="primary"
+        (click)="plotly.purge()">
+  purge()
+</button>
+<button mat-raised-button color="primary"
+        (click)="plotly.react()">
+  react()
+</button>
+<!-- needs ref in order to be discoverable by @ViewChild? -->
+<plotly #plotly [traces]="traces" [layout]="layout"></plotly>
