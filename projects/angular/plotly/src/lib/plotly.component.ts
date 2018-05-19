@@ -1,4 +1,18 @@
-import {Component, ElementRef, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges, ViewChild} from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  EventEmitter,
+  Input,
+  OnChanges,
+  OnDestroy,
+  OnInit,
+  Output,
+  SimpleChanges,
+  ViewChild
+} from '@angular/core';
+import {Subscription} from 'rxjs';
+
 /*
 There are many ways of loading Plotly; let the app developer load it however they want.
 For now, just assume there is a Plotly global
@@ -13,20 +27,22 @@ export interface PlotlyEvent {
   /**
    * Name of the Plotly event. "plotly_*"
    */
-  name: string;
-  event: any;
+  event: string;
+  /**
+   * Data Plotly provided with event
+   */
+  data: any;
+  /**
+   * PlotlyComponent where event is from
+   */
+  source: PlotlyComponent;
 }
 
 @Component({
   selector: 'plotly',
   template: `<div #plotlyDiv></div>`,
-  styles: [`
-    :host {
-      display: block;
-      height: 100%;
-      width: 100%;
-    }
-  `]
+  styleUrls: ['./plotly.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PlotlyComponent implements OnInit, OnChanges, OnDestroy {
 
@@ -34,7 +50,7 @@ export class PlotlyComponent implements OnInit, OnChanges, OnDestroy {
    * The <div> where Plotly is created
    */
   @ViewChild('plotlyDiv')
-  plotlyDiv: ElementRef;
+  plotlyDiv: ElementRef<HTMLDivElement>;
 
   /**
    * Plotly layout
@@ -55,12 +71,22 @@ export class PlotlyComponent implements OnInit, OnChanges, OnDestroy {
   traces: any[];
 
   /**
-   * Plotly events to subscribe to
+   * Plotly events to connect to and emit via plotlyEvent Output
    * "plotly_" prefix optional
    */
   @Input()
   events: string[];
 
+  /**
+   * emits after every Plotly.react,
+   * which is driven by changes to Inputs
+   */
+  @Output()
+  afterReact: EventEmitter<void> = new EventEmitter<void>();
+
+  /**
+   * Emits plotly_* events
+   */
   @Output()
   plotlyEvent: EventEmitter<PlotlyEvent> = new EventEmitter();
 
@@ -75,6 +101,11 @@ export class PlotlyComponent implements OnInit, OnChanges, OnDestroy {
     if (Plotly.react == null) {
       throw new Error('@angular/plotly requires plotly.js >= 1.34.0');
     }
+    const afterReactSub: Subscription = this.afterReact
+      .subscribe(() => {
+        afterReactSub.unsubscribe();  // take(1)
+        this._onFirstReact();
+      });
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -98,6 +129,22 @@ export class PlotlyComponent implements OnInit, OnChanges, OnDestroy {
     this.purge();
   }
 
+  private _onFirstReact() {
+    if (this.events) {
+      const plotlyEvents = this.events.map(e => e.startsWith('plotly_') ? e : 'plotly_' + e);
+      const div: any = this.plotlyDiv.nativeElement;
+      for (const plotlyEvent of plotlyEvents) {
+        div.on(plotlyEvent, data => {
+          this.plotlyEvent.emit({
+            source: this,
+            event: plotlyEvent,
+            data: data
+          });
+        });
+      }
+    }
+  }
+
   /**
    * Invoke Plotly.react with the current traces, layout, and config.
    * This will update the size of the chart.
@@ -108,7 +155,8 @@ export class PlotlyComponent implements OnInit, OnChanges, OnDestroy {
         autosize: true
       };
     }
-    Plotly.react(this.plotlyDiv.nativeElement, this.traces, this.layout, this.config);
+    Plotly.react(this.plotlyDiv.nativeElement, this.traces, this.layout, this.config)
+      .then(() => this.afterReact.emit());
   }
 
   /**

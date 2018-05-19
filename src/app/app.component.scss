@@ -3,6 +3,39 @@ h1 {
   align-items: center;
   justify-content: center;
 }
-button {
-  margin-right: 2em;
+.buttons {
+  padding-bottom: 16px;
+  button {
+    margin-right: 2em;
+  }
+}
+:host {
+  //display: flex;
+  //flex-flow: column nowrap;
+  height: 100%;
+  box-sizing: border-box;
+  padding: 16px 0 0 16px;
+}
+
+mat-tab-group {
+  flex: 1 1 auto;
+}
+
+.event-example {
+  display: flex;
+  flex-flow: row nowrap;
+  > plotly {
+    flex: 1 1 auto;
+  }
+  > div {
+    width: 160px;
+    padding: 16px;
+  }
+}
+
+plotly {
+  border: 1px solid lightblue;
+}
+section {
+  padding: 16px;
 }

@@ -1,7 +1,7 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
-import { randomNormal } from 'd3-random';
-import {Layout, ScatterData} from 'plotly.js';
-import {PlotlyComponent} from '../../projects/angular/plotly/src/lib/plotly.component';
+import {randomIrwinHall, randomNormal} from 'd3-random';
+import {Config, Layout, ScatterData} from 'plotly.js';
+import {PlotlyComponent, PlotlyEvent} from '../../projects/angular/plotly/src/lib/plotly.component';
 
 @Component({
   selector: 'app-root',
@@ -13,25 +13,52 @@ export class AppComponent implements OnInit {
   @ViewChild('plotly')
   plotly: PlotlyComponent;
 
-  layout: Partial<Layout>;
+  layout: Partial<Layout> = {
+    margin: {
+      t: 16, r: 16, b: 30, l: 24
+    }
+  };
+
+  config: Partial<Config> = {
+    displaylogo: false,
+    showLink: false,
+    modeBarButtonsToRemove: [
+      'sendDataToCloud'
+    ]
+  };
 
   traces: Partial<ScatterData>[];
+
+  traces2: Partial<ScatterData>[];
 
   nextX = 5;
 
   rand = randomNormal(1, 2);
 
+  lastEvent: PlotlyEvent;
+
   ngOnInit() {
-    // need to wait for tab layout
-    setTimeout(() => {
-      this.traces = [
-        {
-          type: 'scatter',
-          x: [1, 2, 3, 4],
-          y: [2, 4, 3, 0.5]
-        }
-      ];
-    });
+    this.traces = [
+      {
+        type: 'scatter',
+        x: [1, 2, 3, 4],
+        y: [2, 4, 3, 0.5]
+      }
+    ];
+
+    const x = [];
+    const y = [];
+    const rand = randomIrwinHall(5);
+    for(let i = 0; i < 100; i++) {
+      x.push(i);
+      y.push(rand());
+    }
+    this.traces2 = [{
+      type: 'scatter',
+      mode: 'markers',
+      x,
+      y
+    }];
   }
 
   addRandomY() {
@@ -42,6 +69,11 @@ export class AppComponent implements OnInit {
     (trace.x as number[]).push(x);
     (trace.y as number[]).push(y);
     this.traces = [trace];  // trigger Input change, which calls Plotly.react
+  }
+
+  onPlotlyEvent(e: PlotlyEvent) {
+    console.info('plotlyEvent', e.event, e.data);
+    this.lastEvent = e;
   }
 
 }

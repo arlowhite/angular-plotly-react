@@ -5,22 +5,62 @@
     Plotly.js for Angular
   </h1>
 </div>
-<mat-tab-group [dynamicHeight]="true">
+<mat-tab-group>
   <mat-tab label="Basic">
-    <button mat-raised-button color="primary"
-            (click)="addRandomY()">
-      Add Point
-    </button>
-    <button mat-raised-button color="primary"
-            (click)="plotly.purge()">
-      purge()
-    </button>
-    <button mat-raised-button color="primary"
-            (click)="plotly.react()">
-      react()
-    </button>
-    <!-- needs ref in order to be discoverable by @ViewChild? -->
-    <plotly #plotly [traces]="traces" [layout]="layout"></plotly>
+    <!-- lazy-loading tab fixes initial Plotly sizing issue -->
+    <ng-template matTabContent>
+      <section>
+        <p>
+          Default layout and config
+        </p>
+        <div class="buttons">
+          <button mat-raised-button color="primary"
+                  (click)="addRandomY()">
+            Add Point
+          </button>
+          <button mat-raised-button color="primary"
+                  (click)="plotly.purge()">
+            purge()
+          </button>
+          <button mat-raised-button color="primary"
+                  (click)="plotly.react()">
+            react()
+          </button>
+        </div>
+        <!-- needs ref in order to be discoverable by @ViewChild? -->
+        <!-- style width needed because tab switch has width layout issues -->
+        <plotly #plotly [traces]="traces"
+                style="height: 500px; width: calc(100vw - 44px);"></plotly>
+      </section>
+    </ng-template>
   </mat-tab>
-
+  <mat-tab label="Selection Event">
+    <ng-template matTabContent>
+      <section>
+        <p>
+          <b>config</b> hides some Plotly buttons, <b>layout</b> with reduced margins.
+          <em>plotly_selected</em> and <em>plotly_click</em> event example.
+        </p>
+        <div class="event-example">
+          <plotly [traces]="traces2"
+                  [layout]="layout"
+                  [config]="config"
+                  [events]="['selected', 'plotly_click']"
+                  (plotlyEvent)="onPlotlyEvent($event)">
+          </plotly>
+          <div>
+            <h3>Click or Select</h3>
+            <ng-container *ngIf="lastEvent">
+              <b>{{lastEvent.event}}</b>
+              <div *ngIf="lastEvent.data?.points as points">
+                <div *ngFor="let p of points">
+                  [{{p.pointIndex}}]: ({{ p.x | number:'0.0-1' }}, {{ p.y | number:'0.0-1' }})
+                </div>
+              </div>
+            </ng-container>
+          </div>
+        </div>
+      </section>
+    </ng-template>
+  </mat-tab>
 </mat-tab-group>
