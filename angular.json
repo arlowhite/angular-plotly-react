@@ -144,7 +144,7 @@
       "root": "projects/angular-plotly-react",
       "sourceRoot": "projects/angular-plotly-react/src",
       "projectType": "library",
-      "prefix": "lib",
+      "prefix": "plotly",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-ng-packagr:build",

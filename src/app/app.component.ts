@@ -2,6 +2,8 @@ import {Component, OnInit, ViewChild} from '@angular/core';
 import {randomIrwinHall, randomNormal} from 'd3-random';
 import {Config, Layout, ScatterData} from 'plotly.js';
 import {PlotlyComponent, PlotlyEvent} from 'angular-plotly-react';
+import {ViewportRuler} from '@angular/cdk/overlay';
+import {Observable} from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -14,8 +16,9 @@ export class AppComponent implements OnInit {
   plotly: PlotlyComponent;
 
   layout: Partial<Layout> = {
+    title: 'Click & Select Events!',
     margin: {
-      t: 16, r: 16, b: 30, l: 24
+      t: 36, r: 16, b: 30, l: 24
     }
   };
 
@@ -36,6 +39,10 @@ export class AppComponent implements OnInit {
   rand = randomNormal(1, 2);
 
   lastEvent: PlotlyEvent;
+
+  resize$: Observable<any>;
+
+  constructor(private viewportRuler: ViewportRuler) {}
 
   ngOnInit() {
     this.traces = [
@@ -59,6 +66,8 @@ export class AppComponent implements OnInit {
       x,
       y
     }];
+
+    this.resize$ = this.viewportRuler.change(100);
   }
 
   addRandomY() {

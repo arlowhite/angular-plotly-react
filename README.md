@@ -1,13 +1,12 @@
 
-
 # plotly.js component for Angular
 
 Provides a `PlotlyComponent` for working with [Plotly.js](https://plot.ly/javascript/)  
 This library is designed around the `Plotly.react()` API (available since Plotly.js 1.34.0)
 
-An alternative to this library is [angular-plotly.js](https://github.com/plotly/angular-plotly.js), which is discussed at the bottom of this page.
+There is an official [angular-plotly.js](https://github.com/plotly/angular-plotly.js) library. However, there are some design differences, which are discussed at the bottom of this page.
 
-## angular-plotly-react intallation
+## angular-plotly-react installation
 
 1. Install the `angular-plotly-react` package
 2. [Install plotly.js](https://plot.ly/javascript/getting-started/)  
@@ -21,6 +20,19 @@ or install `plotly.js` and serve it yourself. (add it to `angular.json` scripts)
 If you installed `@types/plotly.js` you may want to import and use these types:  
 `import {Config, Layout, ScatterData} from 'plotly.js';`
 
+Create your trace(s) data.
+See the [Plotly.js documentation](https://plot.ly/javascript/) examples and [full reference](https://plot.ly/javascript/reference/). 
+
+```typescript
+    data: Partial<ScatterData>[] = [
+      {
+        type: 'scatter',
+        x: [1, 2, 3, 4],
+        y: [2, 4, 3, 0.5]
+      }
+    ];
+```
+
 In your template:
 `<plotly [data]="data"></plotly>`
 
@@ -29,8 +41,9 @@ At minimum, only traces `data` is required. However, you probably want to set a 
 
 ```typescript
   layout: Partial<Layout> = {
+    title: 'Hello Plotly!',
     margin: {
-      t: 16, r: 16, b: 30, l: 24
+      t: 36, r: 16, b: 30, l: 24
     }
   };
 
@@ -41,6 +54,18 @@ At minimum, only traces `data` is required. However, you probably want to set a 
       'sendDataToCloud'
     ]
   };
+```
+
+To update the plotly chart when `<plotly>` is resized, you can provide an `Observable` to `[resize$]` or call `PlotlyComponent.react()`.
+
+If you're using **material2**, you can use `ViewportRuler` to get an `Observable` that emits when the window size changes:
+
+```typescript
+  constructor(private viewportRuler: ViewportRuler) {}
+
+  ngOnInit() {
+    this.resize$ = this.viewportRuler.change(100);
+  }
 ```
 
 ## angular-plotly.js discussion
@@ -55,7 +80,7 @@ However, I decided to publish **angular-plotly-react** because of some fundament
  * **angular-plotly.js** creates an `Output() EventEmitter` for every Plotly event (about 26) and hooks all of them even if you don't use the event.
  * Currently, **angular-plotly-react** manages `datarevision` for you.
  * **angular-plotly-react** currently lacks a few features such as `[divId]`,  `[style]`, `[className]`, `[debug]`, but IMO these aren't needed. Submit an issue if you think otherwise.
- * `(error)` and a resize solution will be coming soon.
+ * `(error)` Plotly.react() does not seem to throw errors, so **angular-plotly-react** has no error reporting system.
 
 # Development
 

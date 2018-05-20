@@ -33,7 +33,7 @@
         </div>
         <!-- needs ref in order to be discoverable by @ViewChild? -->
         <!-- style width needed because tab switch has width layout issues -->
-        <plotly #plotly [data]="traces"
+        <plotly #plotly [data]="traces" [resize$]="resize$"
                 style="height: 500px; width: calc(100vw - 44px);"></plotly>
       </section>
     </ng-template>
@@ -49,6 +49,7 @@
           <plotly [data]="traces2"
                   [layout]="layout"
                   [config]="config"
+                  [resize$]="resize$"
                   [events]="['selected', 'plotly_click']"
                   (plotlyEvent)="onPlotlyEvent($event)">
           </plotly>

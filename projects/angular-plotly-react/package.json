@@ -1,6 +1,12 @@
 {
   "name": "angular-plotly-react",
   "description": "Angular plotly.js component designed around Plotly.react()",
+  "keywords": [
+    "angular",
+    "plotly",
+    "plotly.js",
+    "graph"
+  ],
   "version": "0.1.0",
   "license": "MIT",
   "homepage": "https://github.com/arlowhite/angular-plotly-react",

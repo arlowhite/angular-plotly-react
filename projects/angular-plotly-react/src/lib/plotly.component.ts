@@ -11,7 +11,7 @@ import {
   SimpleChanges,
   ViewChild
 } from '@angular/core';
-import {Subscription} from 'rxjs';
+import {Observable, Subscription} from 'rxjs';
 
 /*
 There are many ways of loading Plotly; let the app developer load it however they want.
@@ -80,6 +80,14 @@ export class PlotlyComponent implements OnInit, OnChanges, OnDestroy {
   events: string[];
 
   /**
+   * An observable that emits when the <plotly> size may have changed.
+   */
+  @Input()
+  resize$: Observable<any>;
+
+  private _resizeSubscription: Subscription;
+
+  /**
    * emits after every Plotly.react,
    * which is driven by changes to Inputs
    */
@@ -125,10 +133,22 @@ export class PlotlyComponent implements OnInit, OnChanges, OnDestroy {
         this.layout.autosize = true;
       }
     }
+    if (changes.resize$) {
+      if (this._resizeSubscription) {
+        this._resizeSubscription.unsubscribe();
+      }
+      if (this.resize$) {
+        this._resizeSubscription = this.resize$
+          .subscribe(() => this.react());
+      }
+    }
     this.react(newDatarevision);
   }
 
   ngOnDestroy() {
+    if (this._resizeSubscription) {
+      this._resizeSubscription.unsubscribe();
+    }
     this.purge();
   }
 
