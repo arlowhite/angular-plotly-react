@@ -52,3 +52,6 @@ However, I decided to publish **angular-plotly-react** because of some fundament
 **angular-plotly-react** just uses the `Plotly` global, so you can load plotly.js from a CDN or load it yourself.
  * **angular-plotly.js** has some [strange change detection code](https://github.com/plotly/angular-plotly.js/blob/156ff58ef187267d2c441f7842e572510b06653a/src/app/plotly/plot/plot.component.ts#L234), which I worry will impact performance when plotting lots of data. _I plan to test this and report the issue._
  * **angular-plotly.js** creates an `Output() EventEmitter` for every Plotly event (about 26) and hooks all of them even if you don't use the event.
+ * Currently, **angular-plotly-react** manages `datarevision` for you.
+ * **angular-plotly-react** currently lacks a few features such as `[divId]`,  `[style]`, `[className]`, `[debug]`, but IMO these aren't needed. Submit an issue if you think otherwise.
+ * `(error)` and a resize solution will be coming soon.
