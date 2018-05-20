@@ -21,10 +21,10 @@ If you installed `@types/plotly.js` you may want to import and use these types:
 `import {Config, Layout, ScatterData} from 'plotly.js';`
 
 In your template:
-`<plotly [traces]="traces"></plotly>`
+`<plotly [data]="data"></plotly>`
 
 At minimum, only traces `data` is required. However, you probably want to set a config to adjust Plotly's buttons and a layout to adjust margins:  
-`<plotly [traces]="traces" [layout]="layout" [config]="config"></plotly>`
+`<plotly [data]="data" [layout]="layout" [config]="config"></plotly>`
 
 ```typescript
   layout: Partial<Layout> = {

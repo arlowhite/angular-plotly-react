@@ -66,11 +66,11 @@ export class PlotlyComponent implements OnInit, OnChanges, OnDestroy {
   config: any;
 
   /**
-   * Plotly traces
+   * Plotly traces data
    * Note: may be mutated by Plotly.
    */
   @Input()
-  traces: any[];
+  data: any[];
 
   /**
    * Plotly events to connect to and emit via plotlyEvent Output
@@ -114,7 +114,7 @@ export class PlotlyComponent implements OnInit, OnChanges, OnDestroy {
     let newDatarevision: boolean;
     if (changes.traces && !changes.traces.firstChange) {
       /*
-      As of 1.37.1, updating traces does not reliably update Plotly
+      As of 1.37.1, updating traces data does not reliably update Plotly
       So increment the datarevision to ensure the plot updates
        */
       newDatarevision = true;
@@ -149,10 +149,10 @@ export class PlotlyComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   /**
-   * Invoke Plotly.react with the current traces, layout, and config.
+   * Invoke Plotly.react with the current traces data, layout, and config.
    * This will update the size of the chart.
    *
-   * @param newDatarevision increment datarevision; needed when traces have been mutated
+   * @param newDatarevision increment datarevision; needed when traces data has been mutated
    */
   react(newDatarevision?: boolean) {
     if (this.layout == null) {
@@ -163,7 +163,7 @@ export class PlotlyComponent implements OnInit, OnChanges, OnDestroy {
     if (newDatarevision) {
       this.layout.datarevision = this.datarevision++;
     }
-    Plotly.react(this.plotlyDiv.nativeElement, this.traces, this.layout, this.config)
+    Plotly.react(this.plotlyDiv.nativeElement, this.data, this.layout, this.config)
       .then(() => this.afterReact.emit());
   }
 
