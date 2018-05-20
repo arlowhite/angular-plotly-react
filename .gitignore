@@ -38,5 +38,5 @@ testem.log
 .DS_Store
 Thumbs.db
 
-# @angular/plotly workspace
-projects/angular/plotly/node_modules/
+# angular-plotly-react workspace
+projects/angular-plotly-react/node_modules/

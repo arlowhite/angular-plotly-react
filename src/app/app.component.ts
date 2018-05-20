@@ -1,7 +1,7 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {randomIrwinHall, randomNormal} from 'd3-random';
 import {Config, Layout, ScatterData} from 'plotly.js';
-import {PlotlyComponent, PlotlyEvent} from '../../projects/angular/plotly/src/lib/plotly.component';
+import {PlotlyComponent, PlotlyEvent} from 'angular-plotly-react';
 
 @Component({
   selector: 'app-root',

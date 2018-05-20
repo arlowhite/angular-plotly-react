@@ -101,7 +101,7 @@ export class PlotlyComponent implements OnInit, OnChanges, OnDestroy {
       throw new Error('Plotly global not found! Install plotly.js');
     }
     if (Plotly.react == null) {
-      throw new Error('@angular/plotly requires plotly.js >= 1.34.0');
+      throw new Error('angular-plotly-react requires plotly.js >= 1.34.0');
     }
     const afterReactSub: Subscription = this.afterReact
       .subscribe(() => {

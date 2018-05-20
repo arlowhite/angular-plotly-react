@@ -17,8 +17,8 @@
       "dom"
     ],
     "paths": {
-      "@angular/plotly": [
-        "dist/angular/plotly"
+      "angular-plotly-react": [
+        "dist/angular-plotly-react"
       ]
     }
   }
