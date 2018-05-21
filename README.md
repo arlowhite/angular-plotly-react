@@ -89,6 +89,8 @@ import: [
 
 #### Asynchronous loading
 
+With an asynchronous configuration, plotly.js will be downloaded on demand. To preload, set `preload: true` in PlotlyModule's config. preload is delayed by 250ms by default, which can be configured with `delay`.
+
 In `AppModule`  
 ```typescript
 import: [

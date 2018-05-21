@@ -1,4 +1,4 @@
-import {Injectable, OnInit, Optional, SkipSelf} from '@angular/core';
+import {Injectable, Optional, SkipSelf} from '@angular/core';
 
 declare var Plotly: any;
 
@@ -11,12 +11,23 @@ export interface PlotlyServiceConfig {
    * URL to download Plotly from
    */
   url?: string;
+
+  /**
+   * By default, plotly.js will not be loaded until a PlotlyComponent needs it.
+   * Set preload true to download plotly.js on startup.
+   */
+  preload?: boolean;
+
+  /**
+   * preload delay (default 250ms)
+   */
+  delay?: number;
 }
 
 @Injectable({
   providedIn: 'root'
 })
-export class PlotlyService implements OnInit {
+export class PlotlyService {
 
   config?: PlotlyServiceConfig;
 
@@ -25,9 +36,8 @@ export class PlotlyService implements OnInit {
    * resolves with Plotly object when plotly.js is ready.
    */
   get plotlyReady(): Promise<any> {
-    if (!this.initialized) {
-      // PlotlyModule.forRoot() not called, ngOnInit() not called automatically
-      this.ngOnInit();
+    if (!this._plotlyReady) {
+      this.setup();
     }
     return this._plotlyReady;
   }
@@ -39,16 +49,22 @@ export class PlotlyService implements OnInit {
 
   defaultUrl = 'https://cdn.plot.ly/plotly-latest.min.js';
 
-  private initialized: boolean;
-
   constructor(@Optional() @SkipSelf() otherService?: PlotlyService) {
     if (otherService) {
       throw new Error('multiple PlotlyService! PlotlyModule.forRoot() should only be called once!');
     }
   }
 
-  ngOnInit() {
-    this.initialized = true;
+  /**
+   * Setup plotlyReady based on the current config
+   *
+   * Called by PlotlyModule.forRoot() if config.preload
+   * Otherwise, called lazily when plotlyReady is first accessed.
+   */
+  setup() {
+    if (this._plotlyReady) {
+      throw new Error('PlotlyService already setup');
+    }
     const config = this.config;
     if (config) {
       if (config.plotly) {
