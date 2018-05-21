@@ -24,6 +24,7 @@
     "@angular/router": "^6.0.2",
     "core-js": "^2.5.4",
     "d3-random": "^1.1.0",
+    "plotly.js": "^1.37.1",
     "rxjs": "^6.0.0",
     "zone.js": "^0.8.26"
   },

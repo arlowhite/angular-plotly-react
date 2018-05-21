@@ -10,9 +10,16 @@ There is an official [angular-plotly.js](https://github.com/plotly/angular-plotl
 
 1. Install the `angular-plotly-react` package
 2. [Install plotly.js](https://plot.ly/javascript/getting-started/)  
-Either add the CDN to `index.html` `<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>`  
-or install `plotly.js` and serve it yourself. (add it to `angular.json` scripts)
-3. import `PlotlyModule` in one of your Angular modules
+  Latest version recommended due to `Plotly.react` bug fixes.  
+  Either add the CDN to `index.html`:  
+`<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>`  
+OR  
+ install `plotly.js` package and bundle it into your app.  
+  If using `@angular/cli` (add it to `angular.json` scripts)  
+  `scripts: ["node_modules/plotly.js/dist/plotly-basic.min.js"]`
+
+3. import `PlotlyModule` in one of your Angular modules  
+`import { PlotlyModule } from 'angular-plotly-react';`
 4. (optional) install dev dependency: `@types/plotly.js`
 
 ## PlotlyComponent usage
