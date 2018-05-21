@@ -13,7 +13,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
-    PlotlyModule,
+    PlotlyModule.forRoot({ url: 'plotly.js' }),
     MatButtonModule,
     MatTabsModule
   ],

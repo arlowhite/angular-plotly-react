@@ -9,18 +9,11 @@ There is an official [angular-plotly.js](https://github.com/plotly/angular-plotl
 ## angular-plotly-react installation
 
 1. Install the `angular-plotly-react` package
-2. [Install plotly.js](https://plot.ly/javascript/getting-started/)  
-  Latest version recommended due to `Plotly.react` bug fixes.  
-  Either add the CDN to `index.html`:  
-`<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>`  
-OR  
- install `plotly.js` package and bundle it into your app.  
-  If using `@angular/cli` (add it to `angular.json` scripts)  
-  `scripts: ["node_modules/plotly.js/dist/plotly-basic.min.js"]`
-
-3. import `PlotlyModule` in one of your Angular modules  
+2. import `PlotlyModule` in one of your Angular modules  
 `import { PlotlyModule } from 'angular-plotly-react';`
 4. (optional) install dev dependency: `@types/plotly.js`
+
+By default the `Plotly` global will be used, or if it doesn't exist, plotly.js will be downloaded from the CDN `https://cdn.plot.ly/plotly-latest.min.js`
 
 ## PlotlyComponent usage
 
@@ -63,6 +56,8 @@ At minimum, only traces `data` is required. However, you probably want to set a 
   };
 ```
 
+### Resizing
+
 To update the plotly chart when `<plotly>` is resized, you can provide an `Observable` to `[resize$]` or call `PlotlyComponent.react()`.
 
 If you're using **material2**, you can use `ViewportRuler` to get an `Observable` that emits when the window size changes:
@@ -73,6 +68,45 @@ If you're using **material2**, you can use `ViewportRuler` to get an `Observable
   ngOnInit() {
     this.resize$ = this.viewportRuler.change(100);
   }
+```
+
+### plotly.js loading customization
+
+#### Synchronous loading
+You can create the `Plotly` global by either:  
+Adding `<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>` to `index.html`  
+OR  
+In an `@angular/cli` project, install `plotly.js` and add `"node_modules/plotly.js/dist/plotly-basic.min.js"` to `scripts` in `angular.json`
+
+Alternatively, instead of loading the Plotly global, you can import it within `AppModule` and pass it to `PlotlyModule`:  
+```typescript
+import * as Plotly from 'plotly.js/dist/plotly.min.js';
+...
+import: [
+  PlotlyModule.forRoot({ plotly: Plotly })
+]
+```
+
+#### Asynchronous loading
+
+In `AppModule`  
+```typescript
+import: [
+  PlotlyModule.forRoot({ url: 'https://cdn.plot.ly/plotly-latest.min.js' })
+]
+```
+
+Alternatively, with `@angular/cli` > 6.0, you can configure **lazy** [global scripts](https://github.com/angular/angular-cli/wiki/stories-global-scripts) in `angular.json`:
+```json
+"scripts": [
+  { "input": "node_modules/plotly.js/dist/plotly-basic.min.js", "bundleName": "plotly", "lazy": true }
+]
+```
+In `AppModule` 
+```typescript
+import: [
+  PlotlyModule.forRoot({ url: 'plotly.js' })
+]
 ```
 
 ## angular-plotly.js discussion

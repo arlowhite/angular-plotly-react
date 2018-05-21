@@ -49,7 +49,7 @@
               "src/styles.scss"
             ],
             "scripts": [
-              "node_modules/plotly.js/dist/plotly-basic.min.js"
+              { "input": "node_modules/plotly.js/dist/plotly-basic.min.js", "bundleName": "plotly", "lazy": true }
             ]
           },
           "configurations": {

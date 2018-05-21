@@ -12,16 +12,8 @@ import {
   ViewChild
 } from '@angular/core';
 import {Observable, Subscription} from 'rxjs';
+import {PlotlyService} from './plotly.service';
 
-/*
-There are many ways of loading Plotly; let the app developer load it however they want.
-For now, just assume there is a Plotly global
- */
-declare var Plotly: any;
-
-// importing Plotly this way provides types, but causes App error:
-// Module not found: Error: Can't resolve 'plotly.js' in '/home/awhite/Code/Angular/angular-plotly/dist/angular/plotly/fesm5'
-// import * as Plotly from 'plotly.js';
 
 export interface PlotlyEvent {
   /**
@@ -102,15 +94,25 @@ export class PlotlyComponent implements OnInit, OnChanges, OnDestroy {
 
   private datarevision = 1;
 
-  constructor() { }
+  /**
+   * plotly.js when it is resolved
+   */
+  private plotly: any | undefined;
+
+  constructor(private plotlyService: PlotlyService) {
+    this.plotly = plotlyService.plotly;
+    if (!this.plotly) {
+      plotlyService.plotlyReady
+        .then(plotly => {
+          this.plotly = plotly;
+          if (this.data || this.layout) {
+            this.react();
+          }
+        });
+    }
+  }
 
   ngOnInit() {
-    if (Plotly == null) {
-      throw new Error('Plotly global not found! Install plotly.js');
-    }
-    if (Plotly.react == null) {
-      throw new Error('angular-plotly-react requires plotly.js >= 1.34.0');
-    }
     const afterReactSub: Subscription = this.afterReact
       .subscribe(() => {
         afterReactSub.unsubscribe();  // take(1)
@@ -183,15 +185,18 @@ export class PlotlyComponent implements OnInit, OnChanges, OnDestroy {
     if (newDatarevision) {
       this.layout.datarevision = this.datarevision++;
     }
-    Plotly.react(this.plotlyDiv.nativeElement, this.data, this.layout, this.config)
-      .then(() => this.afterReact.emit());
+    // react() may be called before plotly is ready
+    if (this.plotly) {
+      this.plotly.react(this.plotlyDiv.nativeElement, this.data, this.layout, this.config)
+        .then(() => this.afterReact.emit());
+    }
   }
 
   /**
    * Clear the Plotly <div>
    */
   purge() {
-    Plotly.purge(this.plotlyDiv.nativeElement);
+    this.plotly.purge(this.plotlyDiv.nativeElement);
   }
 
 }
