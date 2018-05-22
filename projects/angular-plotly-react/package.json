@@ -16,8 +16,8 @@
     "url": "https://github.com/arlowhite/angular-plotly-react.git"
   },
   "peerDependencies": {
-    "@angular/common": "^4.0.0",
-    "@angular/core": "^4.0.0"
+    "@angular/common": "^6.0.0-rc.0 || ^6.0.0 || ^5.0.0 || ^4.0.0",
+    "@angular/core": "^6.0.0-rc.0 || ^6.0.0 || ^5.0.0 || ^4.0.0"
   },
   "devDependencies": {
     "@types/plotly.js": "^1.36.1"
