@@ -6,6 +6,10 @@ This library is designed around the `Plotly.react()` API (available since Plotly
 
 There is an official [angular-plotly.js](https://github.com/plotly/angular-plotly.js) library. However, **angular-plotly-react** has a different design, which is discussed at the bottom of this page.
 
+# Project Status
+
+I am no longer working on this project or maintaining it in any way. Feel free to fork it or take whatever code is useful. If you are interested in maintaining the project and want me to transfer it to you, let me know.
+
 ## angular-plotly-react installation
 
 1. Install the `angular-plotly-react` package
